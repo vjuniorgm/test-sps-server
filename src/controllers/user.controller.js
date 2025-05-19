@@ -1,5 +1,5 @@
 
-var userModel = require("../models/user.model");
+var userService = require("../services/user.service");
 const jwt = require("jsonwebtoken");
 
 
@@ -11,12 +11,12 @@ var userController = {
         }
 
         if (params.email) {
-            const emailExists = userModel.findByEmail(params.email);
+            const emailExists = userService.findByEmail(params.email);
             if (emailExists) {
                 return res.status(400).send({ message: "El email ya está en uso por otro usuario" });
             }
         }
-        const user = userModel.create({
+        const user = userService.create({
             name: params.name,
             email: params.email,
             type: params.type,
@@ -26,13 +26,13 @@ var userController = {
     },
 
     readAllUser: function(req, res) {
-        const userList = userModel.findAll();
+        const userList = userService.findAll();
         return res.status(200).send(userList);
     },
 
     getOneUser: function(req, res) {
         const id = parseInt(req.params.id, 10);
-        const user = userModel.findById(id);
+        const user = userService.findById(id);
         if (!user) {
             return res.status(404).send({ message: 'Usuario no encontrado' });
         }
@@ -42,11 +42,11 @@ var userController = {
 
     deleteUser: function(req, res) {
         const id = parseInt(req.params.id, 10);
-        const user = userModel.findById(id);
+        const user = userService.findById(id);
         if (!user) {
             return res.status(404).send({ message: 'Usuario no encontrado' });
         }
-        const deletedUser = userModel.deleteById(id);
+        const deletedUser = userService.deleteById(id);
         return res.status(200).send(deletedUser);
     },
 
@@ -54,13 +54,13 @@ var userController = {
         const id = parseInt(req.params.id, 10);
         const params = req.body;
     
-        const user = userModel.findById(id);
+        const user = userService.findById(id);
         if (!user) {
             return res.status(404).send({ message: "No se ha encontrado el usuario a actualizar" });
         }
     
         if (params.email) {
-            const emailExists = userModel.findAll().some(u => u.email === params.email && u.id !== id);
+            const emailExists = userService.findAll().some(u => u.email === params.email && u.id !== id);
             if (emailExists) {
                 return res.status(400).send({ message: "El correo ya está en uso por otro usuario" });
             }
@@ -81,7 +81,7 @@ var userController = {
                 return res.status(400).send({ message: 'Faltan campos obligatorios' });
             }
     
-            const userFind = userModel.findByEmail(params.email);
+            const userFind = userService.findByEmail(params.email);
     
             if (!userFind) {
                 return res.status(404).send({ message: "Usuario no encontrado" });
