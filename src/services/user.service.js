@@ -25,8 +25,9 @@ const userStore = {
   },
 
   async clear() {
-    await User.deleteMany({});
+    return await User.deleteMany({});
   }
 };
+
 
 module.exports = userStore;

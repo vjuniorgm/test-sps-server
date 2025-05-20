@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 
 var userController = {
-    createUser: function(req, res) {
+    createUser: async function(req, res) {
         const params = req.body;
         if (!params.name || !params.email || !params.password) {
             return res.status(400).send({ message: 'Faltan campos obligatorios' });
@@ -25,12 +25,12 @@ var userController = {
         return res.status(200).send(user);
     },
 
-    readAllUser: function(req, res) {
-        const userList = userService.findAll();
+    readAllUser: async function(req, res) {
+        const userList = await userService.findAll();
         return res.status(200).send(userList);
     },
 
-    getOneUser: function(req, res) {
+    getOneUser: async function(req, res) {
         const id = parseInt(req.params.id, 10);
         const user = userService.findById(id);
         if (!user) {
@@ -40,9 +40,9 @@ var userController = {
     },
     
 
-    deleteUser: function(req, res) {
+    deleteUser: async function(req, res) {
         const id = parseInt(req.params.id, 10);
-        const user = userService.findById(id);
+        const user = await userService.findById(id);
         if (!user) {
             return res.status(404).send({ message: 'Usuario no encontrado' });
         }
@@ -50,17 +50,17 @@ var userController = {
         return res.status(200).send(deletedUser);
     },
 
-    updateUser: function(req, res) {
+    updateUser: async function(req, res) {
         const id = parseInt(req.params.id, 10);
         const params = req.body;
     
-        const user = userService.findById(id);
+        const user = await userService.findById(id);
         if (!user) {
             return res.status(404).send({ message: "No se ha encontrado el usuario a actualizar" });
         }
     
         if (params.email) {
-            const emailExists = userService.findAll().some(u => u.email === params.email && u.id !== id);
+            const emailExists = await userService.findAll().some(u => u.email === params.email && u.id !== id);
             if (emailExists) {
                 return res.status(400).send({ message: "El correo ya está en uso por otro usuario" });
             }
@@ -81,12 +81,12 @@ var userController = {
                 return res.status(400).send({ message: 'Faltan campos obligatorios' });
             }
     
-            const userFind = userService.findByEmail(params.email);
+            const userFind = await userService.findByEmail(params.email);
     
             if (!userFind) {
                 return res.status(404).send({ message: "Usuario no encontrado" });
             }
-
+                console.warn(userFind)
             if (userFind.password !== params.password) {
                 return res.status(401).send({ message: "Contraseña incorrecta" });
             }

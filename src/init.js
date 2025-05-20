@@ -1,13 +1,13 @@
 const userService = require('./services/user.service');
 
 async function initialize() {
-    const userExists = await userService.findByEmail('admin@example.com');
+    const userExists = await userService.findByEmail('admin@admin.com');
     
     if (!userExists) {
         const defaultUser = {
             name: 'Admin',
-            email: 'admin@spsgroup.com.br',
-            password: '1234',
+            email: 'admin@admin.com',
+            password: 'admin',
             type: 'admin'
         };
 
